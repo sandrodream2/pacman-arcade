@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>PAC-MAN</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="game-wrapper">
+  <canvas id="game" width="224" height="288"></canvas>
+  <div id="controls">
+    <button id="btn-up" aria-label="Su">&#9650;</button>
+    <div id="controls-mid">
+      <button id="btn-left" aria-label="Sinistra">&#9664;</button>
+      <button id="btn-right" aria-label="Destra">&#9654;</button>
+    </div>
+    <button id="btn-down" aria-label="Giu">&#9660;</button>
+  </div>
+  <p id="hint">Frecce / WASD &middot; P pausa &middot; Enter per iniziare</p>
+</div>
+<script src="game.js"></script>
+</body>
+</html>
