@@ -50,11 +50,15 @@
   var UP = { dx: 0, dy: -1 }, LEFT = { dx: -1, dy: 0 },
       DOWN = { dx: 0, dy: 1 }, RIGHT = { dx: 1, dy: 0 };
   var DIR_ORDER = [UP, LEFT, DOWN, RIGHT];
+  function sameDir(a, b) { return a.dx === b.dx && a.dy === b.dy; }
   function opp(d) {
-    return d === UP ? DOWN : d === DOWN ? UP : d === LEFT ? RIGHT : LEFT;
+    if (d.dx === 0 && d.dy === -1) return DOWN;
+    if (d.dx === 0 && d.dy === 1) return UP;
+    if (d.dx === -1 && d.dy === 0) return RIGHT;
+    return LEFT;
   }
   function dirAngle(d) {
-    return d === RIGHT ? 0 : d === DOWN ? Math.PI / 2 : d === LEFT ? Math.PI : -Math.PI / 2;
+    return (d.dx === 1) ? 0 : (d.dy === 1) ? Math.PI / 2 : (d.dx === -1) ? Math.PI : -Math.PI / 2;
   }
 
   // Casa fantasmi (coordinate in px)
@@ -177,7 +181,7 @@
   // ---- Stato gioco ----
   var ST = 'attract'; // attract | ready | playing | dying | levelclear | gameover
   var score = 0, highScore = parseInt(localStorage.getItem('pacman-hi') || '0', 10);
-  var lives = 3, level = 1, eatenDots = 0;
+  var lives = 10, level = 1, eatenDots = 0;
   var globalTime = 0, readyTimer = 0, pauseFlag = false;
   var extraLifeGiven = false;
 
@@ -333,7 +337,7 @@
 
   function pacCenter() {
     // svolta
-    if (pac.nextDir !== pac.dir && walkable(Math.floor(pac.x / TILE) + pac.nextDir.dx,
+    if (!sameDir(pac.nextDir, pac.dir) && walkable(Math.floor(pac.x / TILE) + pac.nextDir.dx,
                                             Math.floor(pac.y / TILE) + pac.nextDir.dy)) {
       pac.dir = pac.nextDir;
     }
@@ -392,11 +396,26 @@
       if (pac.eatPause > 0) return;
       pac.eatPause = 0;
     }
+    // svolta immediata: inversione di direzione sempre possibile
+    if (sameDir(pac.nextDir, opp(pac.dir))) {
+      pac.dir = pac.nextDir;
+    }
+    // cornering: svolta perpendicolare quando si e' vicini al centro del tile
+    // (finestra +-2px attorno al centro, come nell'arcade originale)
+    if (!sameDir(pac.nextDir, pac.dir) && !sameDir(pac.nextDir, opp(pac.dir))) {
+      var cc = Math.floor(pac.x / TILE), cr = Math.floor(pac.y / TILE);
+      var ccx = cc * TILE + 4, ccy = cr * TILE + 4;
+      if (Math.abs(pac.x - ccx) <= 2 && Math.abs(pac.y - ccy) <= 2 &&
+          walkable(cc + pac.nextDir.dx, cr + pac.nextDir.dy)) {
+        pac.x = ccx; pac.y = ccy;
+        pac.dir = pac.nextDir;
+      }
+    }
     eatTile();
     var before = pac.moving;
     moveActor(pac, pacSpeed() * dt, pacCenter, walkable);
     eatTile();
-    if (pac.moving || before) pac.mouthPhase += dt * 15;
+    if (pac.moving || before) pac.mouthPhase += dt * 12;
   }
 
   // ---- IA Fantasmi ----
@@ -411,13 +430,13 @@
         return { c: pc, r: pr };
       case 'pinky': {
         var c = pc + pac.dir.dx * 4, r = pr + pac.dir.dy * 4;
-        if (pac.dir === UP) c -= 4; // bug originale
+        if (pac.dir.dy === -1) c -= 4; // bug originale
         return { c: c, r: r };
       }
       case 'inky': {
         var b = ghosts[0];
         var px = pc + pac.dir.dx * 2, py = pr + pac.dir.dy * 2;
-        if (pac.dir === UP) px -= 2;
+        if (pac.dir.dy === -1) px -= 2;
         return { c: px + (px - Math.floor(b.x / TILE)), r: py + (py - Math.floor(b.y / TILE)) };
       }
       case 'clyde': {
@@ -447,7 +466,7 @@
     for (var i = 0; i < DIR_ORDER.length; i++) {
       var d = DIR_ORDER[i];
       if (d === opp(g.dir)) continue;
-      if (g.mode !== 'eyes' && !g.scared && NO_UP[col + ',' + row] && d === UP) continue;
+      if (g.mode !== 'eyes' && !g.scared && NO_UP[col + ',' + row] && d.dy === -1 && d.dx === 0) continue;
       if (!walkable(col + d.dx, row + d.dy)) continue;
       options.push(d);
     }
@@ -595,7 +614,7 @@
   }
 
   function newGame() {
-    score = 0; lives = 3; level = 1; extraLifeGiven = false;
+    score = 0; lives = 10; level = 1; extraLifeGiven = false;
     fruitsCollected = [];
     startLevel(true);
     audio.start();
@@ -704,7 +723,7 @@
   }
 
   function drawPacShape(x, y, openAngle, angleCenter) {
-    ctx.fillStyle = '#ffff00';
+    ctx.fillStyle = '#ffffff';
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.arc(x, y, 6.5, angleCenter + openAngle, angleCenter - openAngle + Math.PI * 2);
@@ -873,8 +892,10 @@
   }
 
   function drawLives() {
-    for (var i = 0; i < Math.max(0, lives - 1); i++) {
-      drawPacShape(14 + i * 16, 276, 0.6, Math.PI);
+    var n = Math.max(0, lives - 1);
+    var perRow = 6;
+    for (var i = 0; i < n && i < 12; i++) {
+      drawPacShape(14 + (i % perRow) * 16, 276 + Math.floor(i / perRow) * 14, 0.6, Math.PI);
     }
   }
 
