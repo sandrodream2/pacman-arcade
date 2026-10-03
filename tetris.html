@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>TETRIS</title>
+<link rel="stylesheet" href="tetris.css">
+</head>
+<body>
+<div id="game-wrapper">
+  <div id="layout">
+    <div id="side-panel">
+      <div class="panel-box">
+        <h2>PUNTI</h2>
+        <div id="score" class="big">000000</div>
+      </div>
+      <div class="panel-box">
+        <h2>RECORD</h2>
+        <div id="highscore" class="big">000000</div>
+      </div>
+      <div class="panel-box">
+        <h2>PROSSIMO</h2>
+        <canvas id="next" width="80" height="80"></canvas>
+      </div>
+      <div class="panel-box">
+        <h2>LIVELLO</h2>
+        <div id="level" class="big">00</div>
+      </div>
+      <div class="panel-box">
+        <h2>RIGHE</h2>
+        <div id="lines" class="big">000</div>
+      </div>
+    </div>
+    <div id="board-container">
+      <canvas id="board" width="240" height="480"></canvas>
+    </div>
+  </div>
+  <div id="controls">
+    <button id="btn-up" aria-label="Ruota">&#8635;</button>
+    <div id="controls-mid">
+      <button id="btn-left" aria-label="Sinistra">&#9664;</button>
+      <button id="btn-right" aria-label="Destra">&#9654;</button>
+      <div id="controls-inner">
+        <button id="btn-down" aria-label="Giu">&#9660;</button>
+        <button id="btn-drop" aria-label="Caduta">&#8681;</button>
+      </div>
+    </div>
+  </div>
+  <p id="hint">Frecce / WASD &middot; Spazio caduta istantanea &middot; P pausa &middot; Enter per iniziare</p>
+</div>
+<script src="tetris.js"></script>
+</body>
+</html>
