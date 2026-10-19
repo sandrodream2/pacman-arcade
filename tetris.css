@@ -1,0 +1,131 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #05050a;
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier New', monospace;
+  overflow: hidden;
+}
+
+#game-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#layout {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+#board-container {
+  position: relative;
+  border: 3px solid #333388;
+  border-radius: 4px;
+  box-shadow: 0 0 24px rgba(64, 90, 255, 0.35), inset 0 0 30px rgba(0, 0, 40, 0.6);
+  background: #0a0a14;
+}
+
+canvas {
+  display: block;
+  image-rendering: pixelated;
+}
+
+#board {
+  width: min(46vh, 320px);
+  height: auto;
+  aspect-ratio: 240 / 480;
+}
+
+#next {
+  width: 80px;
+  height: 80px;
+}
+
+#side-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 130px;
+}
+
+.panel-box {
+  border: 2px solid #333388;
+  border-radius: 4px;
+  padding: 6px 8px;
+  text-align: center;
+  background: rgba(10, 10, 25, 0.85);
+}
+
+.panel-box h2 {
+  margin: 0 0 4px;
+  font-size: 12px;
+  letter-spacing: 2px;
+  color: #6688ff;
+}
+
+.big {
+  font-size: 20px;
+  font-weight: bold;
+  color: #ffffff;
+  text-shadow: 0 0 6px rgba(120, 150, 255, 0.7);
+}
+
+#hint {
+  margin-top: 10px;
+  color: #6688ff;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-align: center;
+}
+
+#controls {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+#controls button, #controls-inner button {
+  width: 58px;
+  height: 58px;
+  font-size: 24px;
+  border-radius: 12px;
+  border: 2px solid #333388;
+  background: #141428;
+  color: #aabbee;
+  touch-action: manipulation;
+}
+
+#controls button:active, #controls-inner button:active {
+  background: #2828aa;
+}
+
+#controls-mid {
+  display: flex;
+  gap: 8px;
+}
+
+#controls-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#controls-inner button {
+  width: 58px;
+  height: 27px;
+  font-size: 15px;
+}
+
+@media (pointer: coarse) {
+  #controls { display: flex; }
+}
